@@ -1,0 +1,96 @@
+@{
+    ViewData["Title"] = "Medical Insurance";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="mb-4"><i class="bi bi-hospital text-success"></i> Medical Insurance</h1>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3>What is Medical Insurance?</h3>
+                    <p>Medical insurance provides coverage for medical expenses incurred due to illness, injury, or hospitalization. It helps you manage healthcare costs without depleting your savings.</p>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3>Key Features</h3>
+                    <ul>
+                        <li><strong>Hospitalization Coverage:</strong> Room rent, ICU charges, surgery costs</li>
+                        <li><strong>Pre & Post Hospitalization:</strong> 60 days pre and 90 days post coverage</li>
+                        <li><strong>Cashless Treatment:</strong> Network hospitals across the country</li>
+                        <li><strong>Family Floater:</strong> Cover entire family under one policy</li>
+                        <li><strong>No Claim Bonus:</strong> Increase coverage for claim-free years</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3>Coverage Options</h3>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Individual</h5>
+                            <p>₹3,00,000 - ₹10,00,000</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Family Floater</h5>
+                            <p>₹5,00,000 - ₹25,00,000</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Senior Citizen</h5>
+                            <p>₹3,00,000 - ₹10,00,000</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3>What's Covered?</h3>
+                    <ul>
+                        <li>Hospitalization expenses (room, nursing, doctor fees)</li>
+                        <li>Surgical procedures and operations</li>
+                        <li>Diagnostic tests and medical examinations</li>
+                        <li>Ambulance charges</li>
+                        <li>Day care procedures</li>
+                        <li>Organ donor expenses</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">
+                    <h4>Get Started</h4>
+                    <p>Calculate your premium and secure your health today!</p>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a asp-controller="Calculator" asp-action="Index" class="btn btn-light w-100 mb-2">Calculate Premium</a>
+                        <a asp-controller="Policy" asp-action="Apply" asp-route-type="Medical" class="btn btn-outline-light w-100">Apply Now</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-light w-100">Register to Apply</a>
+                    }
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5>Premium Factors</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-check-circle text-success"></i> Age</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Coverage Amount</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Pre-existing Conditions</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Family Members</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Medical History</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

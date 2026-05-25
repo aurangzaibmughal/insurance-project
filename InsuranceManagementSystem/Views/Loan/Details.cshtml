@@ -1,0 +1,150 @@
+@model InsuranceManagementSystem.Models.Loan
+
+@{
+    ViewData["Title"] = "Loan Details";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-cash-coin"></i> Loan Details</h1>
+        <a asp-action="Index" class="btn btn-secondary">Back to My Loans</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">Loan Information</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Loan ID:</strong>
+                            <p class="text-muted">#@Model.LoanId</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Status:</strong>
+                            <p><span class="badge @GetStatusBadgeClass(Model.Status)">@Model.Status</span></p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Loan Amount:</strong>
+                            <p class="text-muted fs-4">₹@Model.LoanAmount.ToString("N0")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Policy Value:</strong>
+                            <p class="text-muted">₹@Model.PolicyValue.ToString("N0")</p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Interest Rate:</strong>
+                            <p class="text-muted">@Model.InterestRate% per annum</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Tenure:</strong>
+                            <p class="text-muted">@Model.TenureMonths months</p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Monthly EMI:</strong>
+                            <p class="text-muted fs-5 text-primary">₹@Model.MonthlyEMI?.ToString("N2")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Total Repayment:</strong>
+                            <p class="text-muted">₹@((Model.MonthlyEMI ?? 0) * Model.TenureMonths).ToString("N2")</p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Application Date:</strong>
+                            <p class="text-muted">@Model.ApplicationDate.ToString("dd MMMM yyyy")</p>
+                        </div>
+                        @if (Model.ApprovalDate.HasValue)
+                        {
+                            <div class="col-md-6">
+                                <strong>Approval Date:</strong>
+                                <p class="text-muted">@Model.ApprovalDate.Value.ToString("dd MMMM yyyy")</p>
+                            </div>
+                        }
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.RejectionReason))
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Rejection Reason:</strong> @Model.RejectionReason
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Associated Policy</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Policy Number:</strong> @Model.Policy?.PolicyNumber</p>
+                    <p><strong>Policy Type:</strong> @Model.Policy?.PolicyType Insurance</p>
+                    <p><strong>Coverage Amount:</strong> ₹@Model.Policy?.CoverageAmount.ToString("N0")</p>
+                    <a asp-controller="Policy" asp-action="Details" asp-route-id="@Model.PolicyId" class="btn btn-primary">View Policy Details</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Loan Summary</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Principal Amount:</strong><br>₹@Model.LoanAmount.ToString("N0")</p>
+                    <p><strong>Total Interest:</strong><br>₹@(((Model.MonthlyEMI ?? 0) * Model.TenureMonths) - Model.LoanAmount).ToString("N2")</p>
+                    <p><strong>Total Amount:</strong><br><span class="fs-5 text-primary">₹@((Model.MonthlyEMI ?? 0) * Model.TenureMonths).ToString("N2")</span></p>
+                </div>
+            </div>
+
+            @if (Model.Status == "Pending")
+            {
+                <div class="alert alert-warning">
+                    <i class="bi bi-clock-history"></i> Your loan application is under review. You will be notified once it's processed.
+                </div>
+            }
+            else if (Model.Status == "Approved")
+            {
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle"></i> Your loan has been approved! The amount will be disbursed shortly.
+                </div>
+            }
+
+            <div class="card shadow">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Need Help?</h5>
+                </div>
+                <div class="card-body">
+                    <p><i class="bi bi-telephone"></i> Call: +1 234 567 8900</p>
+                    <p><i class="bi bi-envelope"></i> Email: loans@insurance.com</p>
+                    <p><i class="bi bi-clock"></i> Mon-Fri: 9 AM - 6 PM</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Pending" => "bg-warning text-dark",
+            "Approved" => "bg-success",
+            "Rejected" => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+}

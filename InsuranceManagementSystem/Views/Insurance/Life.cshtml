@@ -1,0 +1,90 @@
+@{
+    ViewData["Title"] = "Life Insurance";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="mb-4"><i class="bi bi-heart-pulse text-danger"></i> Life Insurance</h1>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3>What is Life Insurance?</h3>
+                    <p>Life insurance provides financial protection to your loved ones in the event of your untimely demise. It ensures that your family's financial needs are met even when you're not around.</p>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3>Key Features</h3>
+                    <ul>
+                        <li><strong>Death Benefit:</strong> Lump sum payment to beneficiaries</li>
+                        <li><strong>Tax Benefits:</strong> Premiums and benefits are tax-deductible</li>
+                        <li><strong>Flexible Terms:</strong> Choose coverage period from 5 to 30 years</li>
+                        <li><strong>Loan Facility:</strong> Borrow against your policy value</li>
+                        <li><strong>Maturity Benefits:</strong> Get returns on policy maturity</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3>Coverage Options</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Basic Coverage</h5>
+                            <p>₹5,00,000 - ₹25,00,000</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Premium Coverage</h5>
+                            <p>₹25,00,000 - ₹1,00,00,000</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3>Who Should Buy?</h3>
+                    <ul>
+                        <li>Primary breadwinners of the family</li>
+                        <li>Parents with dependent children</li>
+                        <li>Individuals with outstanding loans</li>
+                        <li>Self-employed professionals</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">
+                    <h4>Get Started</h4>
+                    <p>Calculate your premium and apply for life insurance today!</p>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a asp-controller="Calculator" asp-action="Index" class="btn btn-light w-100 mb-2">Calculate Premium</a>
+                        <a asp-controller="Policy" asp-action="Apply" asp-route-type="Life" class="btn btn-outline-light w-100">Apply Now</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-light w-100">Register to Apply</a>
+                    }
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5>Premium Factors</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-check-circle text-success"></i> Age</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Coverage Amount</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Term Period</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Smoking Status</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Health Condition</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

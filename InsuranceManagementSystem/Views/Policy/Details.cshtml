@@ -1,0 +1,334 @@
+@model InsuranceManagementSystem.Models.Policy
+
+@{
+    ViewData["Title"] = "Policy Details";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-file-earmark-text"></i> Policy Details</h1>
+        <a asp-action="MyPolicies" class="btn btn-secondary">Back to My Policies</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow mb-4">
+                <div class="card-header @GetHeaderClass(Model.PolicyType)">
+                    <h4 class="mb-0">@Model.PolicyType Insurance Policy</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Policy Number:</strong>
+                            <p class="text-muted">@Model.PolicyNumber</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Status:</strong>
+                            <p><span class="badge @GetStatusBadgeClass(Model.Status)">@Model.Status</span></p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Coverage Amount:</strong>
+                            <p class="text-muted">₹@Model.CoverageAmount.ToString("N0")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Annual Premium:</strong>
+                            <p class="text-muted">₹@Model.PremiumAmount.ToString("N2")</p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Start Date:</strong>
+                            <p class="text-muted">@Model.StartDate.ToString("dd MMMM yyyy")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>End Date:</strong>
+                            <p class="text-muted">@Model.EndDate.ToString("dd MMMM yyyy")</p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Application Date:</strong>
+                            <p class="text-muted">@Model.ApplicationDate.ToString("dd MMMM yyyy")</p>
+                        </div>
+                        @if (Model.ApprovalDate.HasValue)
+                        {
+                            <div class="col-md-6">
+                                <strong>Approval Date:</strong>
+                                <p class="text-muted">@Model.ApprovalDate.Value.ToString("dd MMMM yyyy")</p>
+                            </div>
+                        }
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.RejectionReason))
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Rejection Reason:</strong> @Model.RejectionReason
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @if (Model.LifeInsurance != null)
+            {
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0">Life Insurance Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>Age:</strong>
+                                <p class="text-muted">@Model.LifeInsurance.Age years</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Term Period:</strong>
+                                <p class="text-muted">@Model.LifeInsurance.TermPeriod years</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>Smoking Status:</strong>
+                                <p class="text-muted">@Model.LifeInsurance.SmokingStatus</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Health Status:</strong>
+                                <p class="text-muted">@Model.LifeInsurance.HealthStatus</p>
+                            </div>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.LifeInsurance.Occupation))
+                        {
+                            <div class="mb-3">
+                                <strong>Occupation:</strong>
+                                <p class="text-muted">@Model.LifeInsurance.Occupation</p>
+                            </div>
+                        }
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>Beneficiary Name:</strong>
+                                <p class="text-muted">@Model.LifeInsurance.BeneficiaryName</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Beneficiary Relation:</strong>
+                                <p class="text-muted">@Model.LifeInsurance.BeneficiaryRelation</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (Model.MedicalInsurance != null)
+            {
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Medical Insurance Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <strong>Age:</strong>
+                                <p class="text-muted">@Model.MedicalInsurance.Age years</p>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <strong>Height:</strong>
+                                <p class="text-muted">@Model.MedicalInsurance.Height cm</p>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <strong>Weight:</strong>
+                                <p class="text-muted">@Model.MedicalInsurance.Weight kg</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>Blood Group:</strong>
+                                <p class="text-muted">@Model.MedicalInsurance.BloodGroup</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Family Members:</strong>
+                                <p class="text-muted">@Model.MedicalInsurance.NumberOfFamilyMembers</p>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Pre-existing Conditions:</strong>
+                            <p class="text-muted">@(Model.MedicalInsurance.HasPreExistingConditions ? "Yes" : "No")</p>
+                        </div>
+                        @if (Model.MedicalInsurance.HasPreExistingConditions && !string.IsNullOrEmpty(Model.MedicalInsurance.PreExistingConditionDetails))
+                        {
+                            <div class="mb-3">
+                                <strong>Condition Details:</strong>
+                                <p class="text-muted">@Model.MedicalInsurance.PreExistingConditionDetails</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            @if (Model.MotorInsurance != null)
+            {
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Motor Insurance Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>Vehicle Type:</strong>
+                                <p class="text-muted">@Model.MotorInsurance.VehicleType</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Vehicle Value:</strong>
+                                <p class="text-muted">₹@Model.MotorInsurance.VehicleValue.ToString("N0")</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>Make & Model:</strong>
+                                <p class="text-muted">@Model.MotorInsurance.VehicleMake @Model.MotorInsurance.VehicleModel</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Year:</strong>
+                                <p class="text-muted">@Model.MotorInsurance.VehicleYear</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>Registration Number:</strong>
+                                <p class="text-muted">@Model.MotorInsurance.RegistrationNumber</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Vehicle Age:</strong>
+                                <p class="text-muted">@Model.MotorInsurance.VehicleAge years</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (Model.HomeInsurance != null)
+            {
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">Home Insurance Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>Property Type:</strong>
+                                <p class="text-muted">@Model.HomeInsurance.PropertyType</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Property Value:</strong>
+                                <p class="text-muted">₹@Model.HomeInsurance.PropertyValue.ToString("N0")</p>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Property Address:</strong>
+                            <p class="text-muted">@Model.HomeInsurance.PropertyAddress</p>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>Construction Type:</strong>
+                                <p class="text-muted">@Model.HomeInsurance.ConstructionType</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Property Age:</strong>
+                                <p class="text-muted">@Model.HomeInsurance.PropertyAge years</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>Area:</strong>
+                                <p class="text-muted">@Model.HomeInsurance.AreaInSqFt sq ft</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Number of Rooms:</strong>
+                                <p class="text-muted">@Model.HomeInsurance.NumberOfRooms</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>Security System:</strong>
+                                <p class="text-muted">@(Model.HomeInsurance.HasSecuritySystem ? "Yes" : "No")</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Fire Alarm:</strong>
+                                <p class="text-muted">@(Model.HomeInsurance.HasFireAlarm ? "Yes" : "No")</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Status == "Approved")
+                    {
+                        <a asp-controller="Payment" asp-action="Pay" asp-route-policyId="@Model.PolicyId" class="btn btn-success w-100 mb-2">
+                            <i class="bi bi-credit-card"></i> Pay Premium
+                        </a>
+                        <a asp-controller="Loan" asp-action="Apply" asp-route-policyId="@Model.PolicyId" class="btn btn-warning w-100 mb-2">
+                            <i class="bi bi-cash-coin"></i> Apply for Loan
+                        </a>
+                    }
+                    else if (Model.Status == "Pending")
+                    {
+                        <div class="alert alert-info">
+                            <i class="bi bi-clock-history"></i> Your application is under review.
+                        </div>
+                    }
+                    else if (Model.Status == "Rejected")
+                    {
+                        <div class="alert alert-danger">
+                            <i class="bi bi-x-circle"></i> This application was rejected.
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Need Help?</h5>
+                </div>
+                <div class="card-body">
+                    <p><i class="bi bi-telephone"></i> Call: +1 234 567 8900</p>
+                    <p><i class="bi bi-envelope"></i> Email: support@insurance.com</p>
+                    <p><i class="bi bi-clock"></i> Mon-Fri: 9 AM - 6 PM</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetHeaderClass(string policyType)
+    {
+        return policyType switch
+        {
+            "Life" => "bg-danger text-white",
+            "Medical" => "bg-success text-white",
+            "Motor" => "bg-primary text-white",
+            "Home" => "bg-warning text-dark",
+            _ => "bg-secondary text-white"
+        };
+    }
+
+    string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Pending" => "bg-warning text-dark",
+            "Approved" => "bg-success",
+            "Rejected" => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+}

@@ -1,0 +1,192 @@
+@{
+    ViewData["Title"] = "Premium Calculator";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4"><i class="bi bi-calculator"></i> Premium Calculator</h1>
+
+    @if (ViewBag.Premium != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <h4 class="alert-heading">Premium Calculated!</h4>
+            <hr>
+            <p><strong>Insurance Type:</strong> @ViewBag.InsuranceType Insurance</p>
+            <p><strong>Coverage Amount:</strong> ₹@ViewBag.CoverageAmount.ToString("N0")</p>
+            <p><strong>Annual Premium:</strong> <span class="fs-3 fw-bold">₹@ViewBag.Premium.ToString("N2")</span></p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card shadow">
+        <div class="card-body">
+            <ul class="nav nav-tabs" id="calculatorTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="life-tab" data-bs-toggle="tab" data-bs-target="#life" type="button">
+                        <i class="bi bi-heart-pulse"></i> Life Insurance
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="medical-tab" data-bs-toggle="tab" data-bs-target="#medical" type="button">
+                        <i class="bi bi-hospital"></i> Medical Insurance
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="motor-tab" data-bs-toggle="tab" data-bs-target="#motor" type="button">
+                        <i class="bi bi-car-front"></i> Motor Insurance
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button">
+                        <i class="bi bi-house-door"></i> Home Insurance
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content mt-4" id="calculatorTabContent">
+                <!-- Life Insurance Tab -->
+                <div class="tab-pane fade show active" id="life" role="tabpanel">
+                    <form asp-action="CalculateLife" method="post">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Age</label>
+                                <input type="number" name="Age" class="form-control" min="18" max="70" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Coverage Amount (₹)</label>
+                                <input type="number" name="CoverageAmount" class="form-control" min="100000" max="10000000" step="100000" required />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Term Period (Years)</label>
+                                <input type="number" name="TermPeriod" class="form-control" min="5" max="30" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Smoking Status</label>
+                                <select name="SmokingStatus" class="form-select" required>
+                                    <option value="Non-Smoker">Non-Smoker</option>
+                                    <option value="Smoker">Smoker</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Health Status</label>
+                            <select name="HealthStatus" class="form-select" required>
+                                <option value="Excellent">Excellent</option>
+                                <option value="Good" selected>Good</option>
+                                <option value="Fair">Fair</option>
+                                <option value="Poor">Poor</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg w-100">Calculate Premium</button>
+                    </form>
+                </div>
+
+                <!-- Medical Insurance Tab -->
+                <div class="tab-pane fade" id="medical" role="tabpanel">
+                    <form asp-action="CalculateMedical" method="post">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Age</label>
+                                <input type="number" name="Age" class="form-control" min="18" max="80" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Coverage Amount (₹)</label>
+                                <input type="number" name="CoverageAmount" class="form-control" min="100000" max="5000000" step="100000" required />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Number of Family Members</label>
+                                <input type="number" name="NumberOfFamilyMembers" class="form-control" min="1" max="10" value="1" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" name="HasPreExistingConditions" class="form-check-input" id="preExisting" />
+                                    <label class="form-check-label" for="preExisting">
+                                        Has Pre-existing Conditions
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-lg w-100">Calculate Premium</button>
+                    </form>
+                </div>
+
+                <!-- Motor Insurance Tab -->
+                <div class="tab-pane fade" id="motor" role="tabpanel">
+                    <form asp-action="CalculateMotor" method="post">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Vehicle Value (₹)</label>
+                                <input type="number" name="VehicleValue" class="form-control" min="50000" max="10000000" step="10000" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Vehicle Type</label>
+                                <select name="VehicleType" class="form-select" required>
+                                    <option value="Two Wheeler">Two Wheeler</option>
+                                    <option value="Car" selected>Car</option>
+                                    <option value="SUV">SUV</option>
+                                    <option value="Commercial">Commercial</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Vehicle Age (Years)</label>
+                            <input type="number" name="VehicleAge" class="form-control" min="0" max="20" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg w-100">Calculate Premium</button>
+                    </form>
+                </div>
+
+                <!-- Home Insurance Tab -->
+                <div class="tab-pane fade" id="home" role="tabpanel">
+                    <form asp-action="CalculateHome" method="post">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Property Value (₹)</label>
+                                <input type="number" name="PropertyValue" class="form-control" min="500000" max="50000000" step="100000" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Property Type</label>
+                                <select name="PropertyType" class="form-select" required>
+                                    <option value="Apartment" selected>Apartment</option>
+                                    <option value="Independent House">Independent House</option>
+                                    <option value="Villa">Villa</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Construction Type</label>
+                                <select name="ConstructionType" class="form-select" required>
+                                    <option value="RCC" selected>RCC (Reinforced Concrete)</option>
+                                    <option value="Brick">Brick</option>
+                                    <option value="Wood">Wood</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Property Age (Years)</label>
+                                <input type="number" name="PropertyAge" class="form-control" min="0" max="50" required />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" name="HasSecuritySystem" class="form-check-input" id="securitySystem" />
+                                <label class="form-check-label" for="securitySystem">
+                                    Has Security System (10% discount)
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-warning btn-lg w-100">Calculate Premium</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-info mt-4">
+        <h5><i class="bi bi-info-circle"></i> Note:</h5>
+        <p class="mb-0">The premium calculated is an estimate. Actual premium may vary based on additional factors and underwriting assessment.</p>
+    </div>
+</div>

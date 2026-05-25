@@ -1,0 +1,91 @@
+@{
+    ViewData["Title"] = "Motor Insurance";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="mb-4"><i class="bi bi-car-front text-primary"></i> Motor Insurance</h1>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3>What is Motor Insurance?</h3>
+                    <p>Motor insurance provides financial protection against physical damage and bodily injury resulting from traffic accidents and liability that could arise from incidents in a vehicle.</p>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3>Key Features</h3>
+                    <ul>
+                        <li><strong>Third-Party Liability:</strong> Covers damage to third-party property and injury</li>
+                        <li><strong>Own Damage:</strong> Covers damage to your own vehicle</li>
+                        <li><strong>Personal Accident:</strong> Coverage for driver and passengers</li>
+                        <li><strong>Theft Protection:</strong> Coverage against vehicle theft</li>
+                        <li><strong>Natural Calamities:</strong> Protection against floods, earthquakes, etc.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3>Types of Coverage</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Third-Party Only</h5>
+                            <p>Mandatory coverage for third-party liability</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Comprehensive</h5>
+                            <p>Complete coverage including own damage</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3>Add-On Covers</h3>
+                    <ul>
+                        <li>Zero Depreciation Cover</li>
+                        <li>Engine Protection</li>
+                        <li>Roadside Assistance</li>
+                        <li>Return to Invoice</li>
+                        <li>Consumables Cover</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">
+                    <h4>Get Started</h4>
+                    <p>Protect your vehicle with comprehensive motor insurance!</p>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a asp-controller="Calculator" asp-action="Index" class="btn btn-light w-100 mb-2">Calculate Premium</a>
+                        <a asp-controller="Policy" asp-action="Apply" asp-route-type="Motor" class="btn btn-outline-light w-100">Apply Now</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-light w-100">Register to Apply</a>
+                    }
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5>Premium Factors</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-check-circle text-primary"></i> Vehicle Type</li>
+                        <li><i class="bi bi-check-circle text-primary"></i> Vehicle Value</li>
+                        <li><i class="bi bi-check-circle text-primary"></i> Vehicle Age</li>
+                        <li><i class="bi bi-check-circle text-primary"></i> Location</li>
+                        <li><i class="bi bi-check-circle text-primary"></i> IDV (Insured Declared Value)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

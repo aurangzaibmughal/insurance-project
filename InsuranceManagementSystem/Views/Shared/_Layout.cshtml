@@ -1,0 +1,213 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Insurance Management System</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/dark-theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/InsuranceManagementSystem.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-xl navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-shield-check"></i> Insurance Portal
+                </a>
+                <div class="d-flex align-items-center">
+                    <button id="themeToggle" class="btn btn-link" title="Toggle theme" style="color: white; font-size: 1.3rem; padding: 0.5rem 1rem; margin-right: 0.5rem;">
+                        <i id="themeIcon" class="bi bi-moon-stars-fill"></i>
+                    </button>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="About">About</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                Insurance Types
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="Insurance" asp-action="Life">Life Insurance</a></li>
+                                <li><a class="dropdown-item" asp-controller="Insurance" asp-action="Medical">Medical Insurance</a></li>
+                                <li><a class="dropdown-item" asp-controller="Insurance" asp-action="Motor">Motor Insurance</a></li>
+                                <li><a class="dropdown-item" asp-controller="Insurance" asp-action="Home">Home Insurance</a></li>
+                            </ul>
+                        </li>
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Calculator" asp-action="Index">Premium Calculator</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Policy" asp-action="MyPolicies">My Policies</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Claim" asp-action="Index">Claims</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Loan" asp-action="Index">Loans</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="Contact">Contact</a>
+                            </li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-bell-fill" style="font-size: 1.2rem;"></i>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notification-count">
+                                        3
+                                    </span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end notification-dropdown" style="min-width: 320px;">
+                                    <li class="dropdown-header d-flex justify-content-between align-items-center">
+                                        <span><i class="bi bi-bell"></i> Notifications</span>
+                                        <a href="#" class="text-primary small">Mark all read</a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item notification-item" href="#">
+                                            <div class="d-flex">
+                                                <div class="notification-icon bg-success">
+                                                    <i class="bi bi-check-circle"></i>
+                                                </div>
+                                                <div class="notification-content">
+                                                    <h6 class="mb-1">Policy Approved</h6>
+                                                    <p class="mb-0 small text-muted">Your life insurance policy has been approved</p>
+                                                    <small class="text-muted">2 hours ago</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item notification-item" href="#">
+                                            <div class="d-flex">
+                                                <div class="notification-icon bg-warning">
+                                                    <i class="bi bi-exclamation-triangle"></i>
+                                                </div>
+                                                <div class="notification-content">
+                                                    <h6 class="mb-1">Payment Due</h6>
+                                                    <p class="mb-0 small text-muted">Premium payment due in 3 days</p>
+                                                    <small class="text-muted">1 day ago</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item notification-item" href="#">
+                                            <div class="d-flex">
+                                                <div class="notification-icon bg-info">
+                                                    <i class="bi bi-info-circle"></i>
+                                                </div>
+                                                <div class="notification-content">
+                                                    <h6 class="mb-1">New Feature</h6>
+                                                    <p class="mb-0 small text-muted">Check out our new claims portal</p>
+                                                    <small class="text-muted">2 days ago</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li class="text-center">
+                                        <a class="dropdown-item text-primary" href="#">View all notifications</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Admin" asp-action="Index">
+                                        <i class="bi bi-speedometer2"></i> Admin Panel
+                                    </a>
+                                </li>
+                            }
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-person-circle"></i> @User.Identity.Name
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile"><i class="bi bi-person"></i> My Profile</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Payment" asp-action="History"><i class="bi bi-credit-card"></i> Payment History</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                            <button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-right"></i> Logout</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="bg-dark text-white mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Insurance Portal</h5>
+                    <p>Your trusted partner for all insurance needs.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">About Us</a></li>
+                        <li><a href="#" class="text-white">Contact</a></li>
+                        <li><a asp-controller="Home" asp-action="Privacy" class="text-white">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact</h5>
+                    <p><i class="bi bi-telephone"></i> +1 234 567 8900</p>
+                    <p><i class="bi bi-envelope"></i> info@insurance.com</p>
+                </div>
+            </div>
+            <hr class="bg-white">
+            <div class="text-center">
+                <p>&copy; 2026 Insurance Management System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/theme-switcher.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

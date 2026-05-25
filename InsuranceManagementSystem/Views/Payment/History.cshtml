@@ -1,0 +1,112 @@
+@model IEnumerable<InsuranceManagementSystem.Models.Payment>
+
+@{
+    ViewData["Title"] = "Payment History";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4"><i class="bi bi-clock-history"></i> Payment History</h1>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <h4><i class="bi bi-info-circle"></i> No Payment History</h4>
+            <p>You haven't made any payments yet.</p>
+            <a asp-controller="Policy" asp-action="MyPolicies" class="btn btn-primary">View My Policies</a>
+        </div>
+    }
+    else
+    {
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Policy Number</th>
+                                <th>Policy Type</th>
+                                <th>Amount</th>
+                                <th>Payment Method</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var payment in Model)
+                            {
+                                <tr>
+                                    <td><code>@payment.TransactionId</code></td>
+                                    <td>@payment.Policy?.PolicyNumber</td>
+                                    <td>
+                                        <span class="badge @GetPolicyTypeBadge(payment.Policy?.PolicyType)">
+                                            @payment.Policy?.PolicyType
+                                        </span>
+                                    </td>
+                                    <td><strong>₹@payment.Amount.ToString("N2")</strong></td>
+                                    <td>@payment.PaymentMethod</td>
+                                    <td>@payment.PaymentDate.ToString("dd MMM yyyy HH:mm")</td>
+                                    <td>
+                                        <span class="badge @GetStatusBadge(payment.Status)">
+                                            @payment.Status
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mt-4">
+            <div class="card-body">
+                <h5>Payment Summary</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <p><strong>Total Payments:</strong> @Model.Count()</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p><strong>Total Amount Paid:</strong> ₹@Model.Sum(p => p.Amount).ToString("N2")</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p><strong>Last Payment:</strong> @Model.First().PaymentDate.ToString("dd MMM yyyy")</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@functions {
+    string GetPolicyTypeBadge(string? policyType)
+    {
+        return policyType switch
+        {
+            "Life" => "bg-danger",
+            "Medical" => "bg-success",
+            "Motor" => "bg-primary",
+            "Home" => "bg-warning text-dark",
+            _ => "bg-secondary"
+        };
+    }
+
+    string GetStatusBadge(string status)
+    {
+        return status switch
+        {
+            "Completed" => "bg-success",
+            "Pending" => "bg-warning text-dark",
+            "Failed" => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+}

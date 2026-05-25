@@ -1,0 +1,128 @@
+@model InsuranceManagementSystem.Models.LoanApplicationViewModel
+
+@{
+    ViewData["Title"] = "Apply for Loan";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="mb-4"><i class="bi bi-cash-coin"></i> Apply for Loan</h1>
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Policy Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Policy Number:</strong> @Model.PolicyNumber</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Policy Type:</strong> @Model.PolicyType Insurance</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p><strong>Policy Value:</strong> <span class="fs-4 text-primary">₹@Model.PolicyValue.ToString("N0")</span></p>
+                            <p class="text-muted">Maximum loan amount: ₹@((Model.PolicyValue * 0.8m).ToString("N0")) (80% of policy value)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Loan Details</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Apply" method="post" id="loanForm">
+                        <input type="hidden" asp-for="PolicyId" />
+                        <input type="hidden" asp-for="PolicyNumber" />
+                        <input type="hidden" asp-for="PolicyType" />
+                        <input type="hidden" asp-for="PolicyValue" />
+
+                        <div class="mb-3">
+                            <label asp-for="LoanAmount" class="form-label"></label>
+                            <input asp-for="LoanAmount" class="form-control" id="loanAmount" />
+                            <span asp-validation-for="LoanAmount" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="TenureMonths" class="form-label"></label>
+                            <select asp-for="TenureMonths" class="form-select" id="tenure">
+                                <option value="6">6 months</option>
+                                <option value="12" selected>12 months (1 year)</option>
+                                <option value="24">24 months (2 years)</option>
+                                <option value="36">36 months (3 years)</option>
+                                <option value="48">48 months (4 years)</option>
+                                <option value="60">60 months (5 years)</option>
+                                <option value="84">84 months (7 years)</option>
+                                <option value="120">120 months (10 years)</option>
+                            </select>
+                            <span asp-validation-for="TenureMonths" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="InterestRate" class="form-label"></label>
+                            <input asp-for="InterestRate" class="form-control" readonly />
+                        </div>
+
+                        <div class="alert alert-info">
+                            <h5>Estimated Monthly EMI</h5>
+                            <p class="fs-3 mb-0" id="emiDisplay">₹0.00</p>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <h6><i class="bi bi-info-circle"></i> Important Information</h6>
+                            <ul class="mb-0">
+                                <li>Loan amount cannot exceed 80% of policy value</li>
+                                <li>Interest rate is fixed at 10.5% per annum</li>
+                                <li>Loan approval is subject to verification</li>
+                                <li>EMI will be auto-debited from your registered account</li>
+                            </ul>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="terms" required />
+                            <label class="form-check-label" for="terms">
+                                I agree to the loan terms and conditions
+                            </label>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-warning btn-lg">
+                                <i class="bi bi-check-circle"></i> Submit Loan Application
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function calculateEMI() {
+            const loanAmount = parseFloat($('#loanAmount').val()) || 0;
+            const interestRate = parseFloat($('#InterestRate').val()) || 10.5;
+            const tenure = parseInt($('#tenure').val()) || 12;
+
+            if (loanAmount > 0) {
+                const monthlyRate = interestRate / 12 / 100;
+                const emi = loanAmount * monthlyRate * Math.pow(1 + monthlyRate, tenure) / (Math.pow(1 + monthlyRate, tenure) - 1);
+                $('#emiDisplay').text('₹' + emi.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            } else {
+                $('#emiDisplay').text('₹0.00');
+            }
+        }
+
+        $(document).ready(function() {
+            $('#loanAmount, #tenure').on('input change', calculateEMI);
+            calculateEMI();
+        });
+    </script>
+}

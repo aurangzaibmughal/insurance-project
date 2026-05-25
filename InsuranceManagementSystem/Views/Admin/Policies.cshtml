@@ -1,0 +1,166 @@
+@model IEnumerable<InsuranceManagementSystem.Models.Policy>
+
+@{
+    ViewData["Title"] = "Manage Policies";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4"><i class="bi bi-file-earmark-check"></i> Manage Policies</h1>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#pending">Pending (@Model.Count(p => p.Status == "Pending"))</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#approved">Approved (@Model.Count(p => p.Status == "Approved"))</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#rejected">Rejected (@Model.Count(p => p.Status == "Rejected"))</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="pending">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-warning">
+                                <tr>
+                                    <th>Policy Number</th>
+                                    <th>User</th>
+                                    <th>Type</th>
+                                    <th>Coverage</th>
+                                    <th>Premium</th>
+                                    <th>Applied</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var policy in Model.Where(p => p.Status == "Pending"))
+                                {
+                                    <tr>
+                                        <td><code>@policy.PolicyNumber</code></td>
+                                        <td>@policy.User?.FirstName @policy.User?.LastName</td>
+                                        <td><span class="badge bg-primary">@policy.PolicyType</span></td>
+                                        <td>₹@policy.CoverageAmount.ToString("N0")</td>
+                                        <td>₹@policy.PremiumAmount.ToString("N2")</td>
+                                        <td>@policy.ApplicationDate.ToString("dd MMM yyyy")</td>
+                                        <td>
+                                            <form asp-action="ApprovePolicy" method="post" class="d-inline">
+                                                <input type="hidden" name="policyId" value="@policy.PolicyId" />
+                                                <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                                            </form>
+                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal@(policy.PolicyId)">
+                                                Reject
+                                            </button>
+
+                                            <!-- Reject Modal -->
+                                            <div class="modal fade" id="rejectModal@(policy.PolicyId)" tabindex="-1">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Reject Policy</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <form asp-action="RejectPolicy" method="post">
+                                                            <div class="modal-body">
+                                                                <input type="hidden" name="policyId" value="@policy.PolicyId" />
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Rejection Reason</label>
+                                                                    <textarea name="reason" class="form-control" rows="3" required></textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                <button type="submit" class="btn btn-danger">Reject Policy</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="approved">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-success">
+                                <tr>
+                                    <th>Policy Number</th>
+                                    <th>User</th>
+                                    <th>Type</th>
+                                    <th>Coverage</th>
+                                    <th>Premium</th>
+                                    <th>Approved</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var policy in Model.Where(p => p.Status == "Approved"))
+                                {
+                                    <tr>
+                                        <td><code>@policy.PolicyNumber</code></td>
+                                        <td>@policy.User?.FirstName @policy.User?.LastName</td>
+                                        <td><span class="badge bg-primary">@policy.PolicyType</span></td>
+                                        <td>₹@policy.CoverageAmount.ToString("N0")</td>
+                                        <td>₹@policy.PremiumAmount.ToString("N2")</td>
+                                        <td>@policy.ApprovalDate?.ToString("dd MMM yyyy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="rejected">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-danger">
+                                <tr>
+                                    <th>Policy Number</th>
+                                    <th>User</th>
+                                    <th>Type</th>
+                                    <th>Reason</th>
+                                    <th>Applied</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var policy in Model.Where(p => p.Status == "Rejected"))
+                                {
+                                    <tr>
+                                        <td><code>@policy.PolicyNumber</code></td>
+                                        <td>@policy.User?.FirstName @policy.User?.LastName</td>
+                                        <td><span class="badge bg-primary">@policy.PolicyType</span></td>
+                                        <td>@policy.RejectionReason</td>
+                                        <td>@policy.ApplicationDate.ToString("dd MMM yyyy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

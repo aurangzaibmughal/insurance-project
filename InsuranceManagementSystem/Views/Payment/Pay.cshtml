@@ -1,0 +1,87 @@
+@model InsuranceManagementSystem.Models.PaymentViewModel
+
+@{
+    ViewData["Title"] = "Pay Premium";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="mb-4"><i class="bi bi-credit-card"></i> Pay Premium</h1>
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Policy Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Policy Number:</strong> @Model.PolicyNumber</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Policy Type:</strong> @Model.PolicyType Insurance</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p><strong>Premium Amount:</strong> <span class="fs-4 text-primary">₹@Model.PremiumAmount.ToString("N2")</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Payment Details</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="ProcessPayment" method="post">
+                        <input type="hidden" asp-for="PolicyId" />
+                        <input type="hidden" asp-for="PolicyNumber" />
+                        <input type="hidden" asp-for="PolicyType" />
+                        <input type="hidden" asp-for="PremiumAmount" />
+
+                        <div class="mb-3">
+                            <label asp-for="Amount" class="form-label"></label>
+                            <input asp-for="Amount" class="form-control" value="@Model.PremiumAmount" />
+                            <span asp-validation-for="Amount" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PaymentMethod" class="form-label"></label>
+                            <select asp-for="PaymentMethod" class="form-select" required>
+                                <option value="">Select Payment Method</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Debit Card">Debit Card</option>
+                                <option value="Net Banking">Net Banking</option>
+                                <option value="UPI">UPI</option>
+                                <option value="Wallet">Digital Wallet</option>
+                            </select>
+                            <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Remarks" class="form-label">Remarks (Optional)</label>
+                            <textarea asp-for="Remarks" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> This is a demo payment system. In production, this would integrate with a real payment gateway.
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle"></i> Process Payment
+                            </button>
+                            <a asp-controller="Policy" asp-action="MyPolicies" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

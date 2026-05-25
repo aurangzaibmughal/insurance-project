@@ -1,0 +1,275 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="dashboard-header mb-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-4 mb-2">
+                    <i class="bi bi-speedometer2"></i> Welcome back, @Model.UserName!
+                </h1>
+                <p class="lead text-muted">Here's an overview of your insurance portfolio</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <a asp-controller="Policy" asp-action="Apply" class="btn btn-primary btn-lg">
+                    <i class="bi bi-plus-circle"></i> New Policy
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card glass-card stat-card border-0">
+                <div class="card-body text-center">
+                    <div class="stat-icon bg-primary mb-3">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+                    <h3 class="stat-number" data-target="@Model.TotalPolicies">0</h3>
+                    <p class="text-muted mb-0">Total Policies</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card glass-card stat-card border-0">
+                <div class="card-body text-center">
+                    <div class="stat-icon bg-success mb-3">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <h3 class="stat-number" data-target="@Model.ActivePolicies">0</h3>
+                    <p class="text-muted mb-0">Active Policies</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card glass-card stat-card border-0">
+                <div class="card-body text-center">
+                    <div class="stat-icon bg-warning mb-3">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <h3 class="stat-number" data-target="@Model.PendingPolicies">0</h3>
+                    <p class="text-muted mb-0">Pending Policies</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card glass-card stat-card border-0">
+                <div class="card-body text-center">
+                    <div class="stat-icon bg-info mb-3">
+                        <i class="bi bi-currency-dollar"></i>
+                    </div>
+                    <h3 class="stat-number" data-target="@((int)Model.TotalPayments)">0</h3>
+                    <p class="text-muted mb-0">Total Paid ($)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row g-4 mb-5">
+        <div class="col-12">
+            <div class="card glass-card border-0">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">
+                        <i class="bi bi-lightning-charge"></i> Quick Actions
+                    </h4>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <a asp-controller="Calculator" asp-action="Index" class="quick-action-card">
+                                <div class="quick-action-icon bg-primary">
+                                    <i class="bi bi-calculator"></i>
+                                </div>
+                                <h6>Calculate Premium</h6>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-controller="Policy" asp-action="MyPolicies" class="quick-action-card">
+                                <div class="quick-action-icon bg-success">
+                                    <i class="bi bi-file-earmark-check"></i>
+                                </div>
+                                <h6>View Policies</h6>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-controller="Payment" asp-action="History" class="quick-action-card">
+                                <div class="quick-action-icon bg-info">
+                                    <i class="bi bi-credit-card"></i>
+                                </div>
+                                <h6>Payment History</h6>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-controller="Claim" asp-action="Index" class="quick-action-card">
+                                <div class="quick-action-icon bg-warning">
+                                    <i class="bi bi-clipboard-check"></i>
+                                </div>
+                                <h6>File Claim</h6>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card glass-card border-0">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clock-history"></i> Recent Policies
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentPolicies.Any())
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var policy in Model.RecentPolicies)
+                            {
+                                <div class="list-group-item border-0 px-0">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">@policy.PolicyType Insurance</h6>
+                                            <small class="text-muted">Policy #@policy.PolicyNumber</small>
+                                        </div>
+                                        <span class="badge bg-@(policy.Status == "Active" ? "success" : policy.Status == "Pending" ? "warning" : "secondary")">
+                                            @policy.Status
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center py-4">No policies yet</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card glass-card border-0">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">
+                        <i class="bi bi-receipt"></i> Recent Payments
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentPayments.Any())
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var payment in Model.RecentPayments)
+                            {
+                                <div class="list-group-item border-0 px-0">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">$@payment.Amount.ToString("N2")</h6>
+                                            <small class="text-muted">@payment.PaymentDate.ToString("MMM dd, yyyy")</small>
+                                        </div>
+                                        <span class="badge bg-@(payment.Status == "Completed" ? "success" : payment.Status == "Pending" ? "warning" : "danger")">
+                                            @payment.Status
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center py-4">No payments yet</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        .dashboard-header {
+            background: linear-gradient(135deg, #0056b3 0%, #003d82 100%);
+            color: white;
+            padding: 60px 0;
+            margin: -20px -15px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 15px 0 5px;
+        }
+
+        .quick-action-card {
+            display: block;
+            text-align: center;
+            padding: 30px 20px;
+            background: white;
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+        }
+
+        .quick-action-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .quick-action-card h6 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .list-group-item {
+            transition: all 0.2s ease;
+        }
+
+        .list-group-item:hover {
+            background-color: rgba(0, 86, 179, 0.05);
+            transform: translateX(5px);
+        }
+    </style>
+}

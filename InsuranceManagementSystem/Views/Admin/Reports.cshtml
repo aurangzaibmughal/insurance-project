@@ -1,0 +1,68 @@
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4"><i class="bi bi-graph-up"></i> Reports & Analytics</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Policy Distribution by Type</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Policy Type</th>
+                                <th>Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var stat in ViewBag.PolicyStats)
+                            {
+                                <tr>
+                                    <td>@stat.PolicyType Insurance</td>
+                                    <td><strong>@stat.Count</strong></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Monthly Revenue (Last 6 Months)</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var revenue in ViewBag.MonthlyRevenue)
+                            {
+                                <tr>
+                                    <td>@revenue.Month</td>
+                                    <td><strong>₹@revenue.Revenue.ToString("N2")</strong></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-info">
+        <h5><i class="bi bi-info-circle"></i> Report Information</h5>
+        <p class="mb-0">These reports provide insights into policy distribution and revenue trends. More detailed analytics can be added as needed.</p>
+    </div>
+</div>

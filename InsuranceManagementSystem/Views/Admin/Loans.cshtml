@@ -1,0 +1,172 @@
+@model IEnumerable<InsuranceManagementSystem.Models.Loan>
+
+@{
+    ViewData["Title"] = "Manage Loans";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4"><i class="bi bi-cash-coin"></i> Manage Loans</h1>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#pending">Pending (@Model.Count(l => l.Status == "Pending"))</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#approved">Approved (@Model.Count(l => l.Status == "Approved"))</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#rejected">Rejected (@Model.Count(l => l.Status == "Rejected"))</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="pending">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-warning">
+                                <tr>
+                                    <th>Loan ID</th>
+                                    <th>User</th>
+                                    <th>Policy</th>
+                                    <th>Amount</th>
+                                    <th>Tenure</th>
+                                    <th>EMI</th>
+                                    <th>Applied</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var loan in Model.Where(l => l.Status == "Pending"))
+                                {
+                                    <tr>
+                                        <td>#@loan.LoanId</td>
+                                        <td>@loan.User?.FirstName @loan.User?.LastName</td>
+                                        <td><code>@loan.Policy?.PolicyNumber</code></td>
+                                        <td>₹@loan.LoanAmount.ToString("N0")</td>
+                                        <td>@loan.TenureMonths months</td>
+                                        <td>₹@loan.MonthlyEMI?.ToString("N2")</td>
+                                        <td>@loan.ApplicationDate.ToString("dd MMM yyyy")</td>
+                                        <td>
+                                            <form asp-action="ApproveLoan" method="post" class="d-inline">
+                                                <input type="hidden" name="loanId" value="@loan.LoanId" />
+                                                <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                                            </form>
+                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal@(loan.LoanId)">
+                                                Reject
+                                            </button>
+
+                                            <!-- Reject Modal -->
+                                            <div class="modal fade" id="rejectModal@(loan.LoanId)" tabindex="-1">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Reject Loan</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <form asp-action="RejectLoan" method="post">
+                                                            <div class="modal-body">
+                                                                <input type="hidden" name="loanId" value="@loan.LoanId" />
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Rejection Reason</label>
+                                                                    <textarea name="reason" class="form-control" rows="3" required></textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                <button type="submit" class="btn btn-danger">Reject Loan</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="approved">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-success">
+                                <tr>
+                                    <th>Loan ID</th>
+                                    <th>User</th>
+                                    <th>Policy</th>
+                                    <th>Amount</th>
+                                    <th>Tenure</th>
+                                    <th>EMI</th>
+                                    <th>Approved</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var loan in Model.Where(l => l.Status == "Approved"))
+                                {
+                                    <tr>
+                                        <td>#@loan.LoanId</td>
+                                        <td>@loan.User?.FirstName @loan.User?.LastName</td>
+                                        <td><code>@loan.Policy?.PolicyNumber</code></td>
+                                        <td>₹@loan.LoanAmount.ToString("N0")</td>
+                                        <td>@loan.TenureMonths months</td>
+                                        <td>₹@loan.MonthlyEMI?.ToString("N2")</td>
+                                        <td>@loan.ApprovalDate?.ToString("dd MMM yyyy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="rejected">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-danger">
+                                <tr>
+                                    <th>Loan ID</th>
+                                    <th>User</th>
+                                    <th>Policy</th>
+                                    <th>Amount</th>
+                                    <th>Reason</th>
+                                    <th>Applied</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var loan in Model.Where(l => l.Status == "Rejected"))
+                                {
+                                    <tr>
+                                        <td>#@loan.LoanId</td>
+                                        <td>@loan.User?.FirstName @loan.User?.LastName</td>
+                                        <td><code>@loan.Policy?.PolicyNumber</code></td>
+                                        <td>₹@loan.LoanAmount.ToString("N0")</td>
+                                        <td>@loan.RejectionReason</td>
+                                        <td>@loan.ApplicationDate.ToString("dd MMM yyyy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

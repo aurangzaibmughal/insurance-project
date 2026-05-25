@@ -1,0 +1,109 @@
+@model IEnumerable<InsuranceManagementSystem.Models.Policy>
+
+@{
+    ViewData["Title"] = "My Policies";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4"><i class="bi bi-file-earmark-text"></i> My Policies</h1>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <h4><i class="bi bi-info-circle"></i> No Policies Found</h4>
+            <p>You haven't applied for any insurance policies yet.</p>
+            <a asp-controller="Calculator" asp-action="Index" class="btn btn-primary">Calculate Premium & Apply</a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var policy in Model)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header @GetHeaderClass(policy.PolicyType)">
+                            <h5 class="mb-0">
+                                @GetIcon(policy.PolicyType) @policy.PolicyType Insurance
+                                <span class="badge @GetStatusBadgeClass(policy.Status) float-end">@policy.Status</span>
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Policy Number:</strong> @policy.PolicyNumber</p>
+                            <p><strong>Coverage Amount:</strong> ₹@policy.CoverageAmount.ToString("N0")</p>
+                            <p><strong>Annual Premium:</strong> ₹@policy.PremiumAmount.ToString("N2")</p>
+                            <p><strong>Start Date:</strong> @policy.StartDate.ToString("dd MMM yyyy")</p>
+                            <p><strong>End Date:</strong> @policy.EndDate.ToString("dd MMM yyyy")</p>
+                            <p><strong>Application Date:</strong> @policy.ApplicationDate.ToString("dd MMM yyyy")</p>
+
+                            @if (policy.Status == "Approved" && policy.ApprovalDate.HasValue)
+                            {
+                                <p><strong>Approval Date:</strong> @policy.ApprovalDate.Value.ToString("dd MMM yyyy")</p>
+                            }
+
+                            @if (policy.Status == "Rejected" && !string.IsNullOrEmpty(policy.RejectionReason))
+                            {
+                                <div class="alert alert-danger mt-2">
+                                    <strong>Rejection Reason:</strong> @policy.RejectionReason
+                                </div>
+                            }
+                        </div>
+                        <div class="card-footer">
+                            <a asp-action="Details" asp-route-id="@policy.PolicyId" class="btn btn-primary btn-sm">View Details</a>
+                            @if (policy.Status == "Approved")
+                            {
+                                <a asp-controller="Payment" asp-action="Pay" asp-route-policyId="@policy.PolicyId" class="btn btn-success btn-sm">Pay Premium</a>
+                                <a asp-controller="Loan" asp-action="Apply" asp-route-policyId="@policy.PolicyId" class="btn btn-warning btn-sm">Apply for Loan</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@functions {
+    string GetHeaderClass(string policyType)
+    {
+        return policyType switch
+        {
+            "Life" => "bg-danger text-white",
+            "Medical" => "bg-success text-white",
+            "Motor" => "bg-primary text-white",
+            "Home" => "bg-warning text-dark",
+            _ => "bg-secondary text-white"
+        };
+    }
+
+    string GetIcon(string policyType)
+    {
+        return policyType switch
+        {
+            "Life" => "<i class=\"bi bi-heart-pulse\"></i>",
+            "Medical" => "<i class=\"bi bi-hospital\"></i>",
+            "Motor" => "<i class=\"bi bi-car-front\"></i>",
+            "Home" => "<i class=\"bi bi-house-door\"></i>",
+            _ => "<i class=\"bi bi-file-earmark\"></i>"
+        };
+    }
+
+    string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Pending" => "bg-warning text-dark",
+            "Approved" => "bg-success",
+            "Rejected" => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+}

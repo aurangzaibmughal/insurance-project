@@ -1,0 +1,182 @@
+@{
+    ViewData["Title"] = "Apply for Insurance";
+    var policyType = ViewBag.PolicyType as string ?? "Life";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4"><i class="bi bi-file-earmark-plus"></i> Apply for @policyType Insurance</h1>
+
+    <div class="alert alert-info">
+        <h5><i class="bi bi-info-circle"></i> Before You Apply</h5>
+        <p>Please use the <a asp-controller="Calculator" asp-action="Index">Premium Calculator</a> to calculate your premium before applying.</p>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body">
+            @if (policyType == "Life")
+            {
+                <form asp-action="ApplyLife" method="post">
+                    <h4 class="mb-3">Personal Information</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Age</label>
+                            <input type="number" name="Age" class="form-control" min="18" max="70" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Occupation</label>
+                            <input type="text" name="Occupation" class="form-control" maxlength="100" />
+                        </div>
+                    </div>
+
+                    <h4 class="mb-3 mt-4">Policy Details</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Coverage Amount (₹)</label>
+                            <input type="number" name="CoverageAmount" class="form-control" min="100000" max="10000000" step="100000" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Term Period (Years)</label>
+                            <input type="number" name="TermPeriod" class="form-control" min="5" max="30" required />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Smoking Status</label>
+                            <select name="SmokingStatus" class="form-select" required>
+                                <option value="Non-Smoker">Non-Smoker</option>
+                                <option value="Smoker">Smoker</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Health Status</label>
+                            <select name="HealthStatus" class="form-select" required>
+                                <option value="Excellent">Excellent</option>
+                                <option value="Good" selected>Good</option>
+                                <option value="Fair">Fair</option>
+                                <option value="Poor">Poor</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <h4 class="mb-3 mt-4">Beneficiary Information</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Beneficiary Name</label>
+                            <input type="text" name="BeneficiaryName" class="form-control" maxlength="200" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Beneficiary Relation</label>
+                            <input type="text" name="BeneficiaryRelation" class="form-control" maxlength="50" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Annual Premium (₹)</label>
+                        <input type="number" name="PremiumAmount" class="form-control" step="0.01" required />
+                        <small class="text-muted">Enter the premium amount calculated from the calculator</small>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="terms" required />
+                        <label class="form-check-label" for="terms">
+                            I agree to the terms and conditions
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg">Submit Application</button>
+                    <a asp-action="MyPolicies" class="btn btn-secondary btn-lg">Cancel</a>
+                </form>
+            }
+            else if (policyType == "Medical")
+            {
+                <form asp-action="ApplyMedical" method="post">
+                    <h4 class="mb-3">Personal Information</h4>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Age</label>
+                            <input type="number" name="Age" class="form-control" min="18" max="80" required />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Height (cm)</label>
+                            <input type="number" name="Height" class="form-control" min="50" max="250" step="0.01" required />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Weight (kg)</label>
+                            <input type="number" name="Weight" class="form-control" min="30" max="200" step="0.01" required />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Blood Group</label>
+                            <select name="BloodGroup" class="form-select">
+                                <option value="">Select Blood Group</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Number of Family Members</label>
+                            <input type="number" name="NumberOfFamilyMembers" class="form-control" min="1" max="10" value="1" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" name="HasPreExistingConditions" class="form-check-input" id="preExisting" />
+                            <label class="form-check-label" for="preExisting">
+                                I have pre-existing medical conditions
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Pre-existing Condition Details (if any)</label>
+                        <textarea name="PreExistingConditionDetails" class="form-control" rows="3" maxlength="500"></textarea>
+                    </div>
+
+                    <h4 class="mb-3 mt-4">Policy Details</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Coverage Amount (₹)</label>
+                            <input type="number" name="CoverageAmount" class="form-control" min="100000" max="5000000" step="100000" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Annual Premium (₹)</label>
+                            <input type="number" name="PremiumAmount" class="form-control" step="0.01" required />
+                            <small class="text-muted">Enter the premium amount calculated from the calculator</small>
+                        </div>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="terms2" required />
+                        <label class="form-check-label" for="terms2">
+                            I agree to the terms and conditions
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-lg">Submit Application</button>
+                    <a asp-action="MyPolicies" class="btn btn-secondary btn-lg">Cancel</a>
+                </form>
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    <p>Application form for @policyType insurance is under development.</p>
+                    <a asp-controller="Calculator" asp-action="Index" class="btn btn-primary">Go to Calculator</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

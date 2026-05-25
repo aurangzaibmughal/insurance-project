@@ -1,0 +1,89 @@
+@model IEnumerable<InsuranceManagementSystem.Models.Loan>
+
+@{
+    ViewData["Title"] = "My Loans";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4"><i class="bi bi-cash-coin"></i> My Loans</h1>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <h4><i class="bi bi-info-circle"></i> No Loan Applications</h4>
+            <p>You haven't applied for any loans yet. You can apply for a loan against your approved policies.</p>
+            <a asp-controller="Policy" asp-action="MyPolicies" class="btn btn-primary">View My Policies</a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var loan in Model)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0">
+                                <i class="bi bi-cash-coin"></i> Loan Application
+                                <span class="badge @GetStatusBadgeClass(loan.Status) float-end">@loan.Status</span>
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Policy Number:</strong> @loan.Policy?.PolicyNumber</p>
+                            <p><strong>Policy Type:</strong> @loan.Policy?.PolicyType Insurance</p>
+                            <p><strong>Loan Amount:</strong> ₹@loan.LoanAmount.ToString("N0")</p>
+                            <p><strong>Interest Rate:</strong> @loan.InterestRate%</p>
+                            <p><strong>Tenure:</strong> @loan.TenureMonths months</p>
+                            <p><strong>Monthly EMI:</strong> ₹@loan.MonthlyEMI?.ToString("N2")</p>
+                            <p><strong>Application Date:</strong> @loan.ApplicationDate.ToString("dd MMM yyyy")</p>
+
+                            @if (loan.Status == "Approved" && loan.ApprovalDate.HasValue)
+                            {
+                                <p><strong>Approval Date:</strong> @loan.ApprovalDate.Value.ToString("dd MMM yyyy")</p>
+                            }
+
+                            @if (loan.Status == "Rejected" && !string.IsNullOrEmpty(loan.RejectionReason))
+                            {
+                                <div class="alert alert-danger mt-2">
+                                    <strong>Rejection Reason:</strong> @loan.RejectionReason
+                                </div>
+                            }
+                        </div>
+                        <div class="card-footer">
+                            <a asp-action="Details" asp-route-id="@loan.LoanId" class="btn btn-primary btn-sm">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@functions {
+    string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Pending" => "bg-warning text-dark",
+            "Approved" => "bg-success",
+            "Rejected" => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+}
